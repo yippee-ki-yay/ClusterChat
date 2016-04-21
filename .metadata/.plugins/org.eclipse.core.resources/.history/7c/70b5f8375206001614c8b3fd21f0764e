@@ -1,0 +1,10 @@
+package session;
+
+import javax.ejb.Local;
+
+@Local
+public interface UserBeanLocal {
+
+	public String login();
+	
+}

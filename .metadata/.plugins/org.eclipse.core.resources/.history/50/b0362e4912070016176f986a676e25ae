@@ -1,0 +1,16 @@
+package session;
+
+import java.util.ArrayList;
+
+import javax.ejb.Singleton;
+
+@Singleton
+public class ClusterManagerBean 
+{
+	public ArrayList<String> nodes = new ArrayList<String>();
+	
+	public void register(String address, String alias)
+	{
+		
+	}
+}

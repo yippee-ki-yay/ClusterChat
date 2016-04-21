@@ -1,0 +1,19 @@
+package websockets;
+
+import javax.ejb.Singleton;
+import javax.websocket.server.ServerEndpoint;
+
+import javax.ejb.Singleton;
+import javax.websocket.OnClose;
+import javax.websocket.OnError;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
+import javax.websocket.server.ServerEndpoint;
+
+@ServerEndpoint("/websocket")
+@Singleton
+public class ChatBackend 
+{
+
+}

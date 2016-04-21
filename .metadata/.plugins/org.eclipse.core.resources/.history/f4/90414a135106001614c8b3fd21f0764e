@@ -1,0 +1,25 @@
+(function() {
+	angular.module("chatApp").controller("loginController", loginController);
+		
+	loginController.$inject = ['$scope', '$http'];
+	
+	function loginController($scope, $http) {
+		
+		$scope.username = '';
+		$scope.password = '';
+		
+		$scope.login = function() {
+			var content = {"username": $scope.username, "password": $scope.password};
+			
+			$http.post('', content).
+			then(function(resp) {
+				
+			},
+			function(resp) {
+				
+			}
+			)
+		}
+		
+	}
+})();

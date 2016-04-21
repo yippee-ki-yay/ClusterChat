@@ -1,0 +1,16 @@
+(function() {
+	angular.module("chatApp").controller("chatController", chatController);
+	
+	angular.module("chatApp").controller("chatController", function($http) {
+		
+		console.log("in chat");
+	
+		var dataStream = $websocket('wss://website.com/data');
+		
+		$scope.sendMsg = function()
+		{
+			console.log("msg");
+		}
+		
+	});
+})();

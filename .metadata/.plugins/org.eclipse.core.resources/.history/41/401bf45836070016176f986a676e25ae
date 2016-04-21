@@ -1,0 +1,34 @@
+(function() {
+	angular.module("chatApp").controller("chatController", chatController);
+	
+	chatController.$inject = ['$scope', '$websocket', 'userService'];
+	
+	function chatController($scope, $websocket, userService) {
+	
+		$scope.msgList = [];
+		$scope.userList = [];
+		
+		var dataStream = $websocket('ws://localhost:8080/ChatAppClient/websocket');
+		
+		dataStream.onMessage(function(message) {
+			console.log(message);
+			
+			if(message.type == "msg") {
+				
+			}
+			
+			$scope.msgList.push(message.data);
+		});
+		
+		$scope.sendMsg = function()
+		{
+			var msgData = {"type" : "msg", "content" : $scope.msgText, "from": userService.getUser()};
+			
+			console.log(msgData);
+			
+			dataStream.send($scope.msgText);
+			$scope.msgText = "";
+		}
+		
+	};
+})();

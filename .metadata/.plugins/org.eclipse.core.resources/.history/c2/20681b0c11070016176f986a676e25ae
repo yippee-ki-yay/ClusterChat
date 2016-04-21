@@ -1,0 +1,9 @@
+package session;
+
+import javax.ejb.Singleton;
+
+@Singleton
+public class ClusterManagerBean 
+{
+
+}

@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">&#x0A;<refactoring comment="Delete resource &apos;UserAppRest&apos;" deleteContents="true" description="Delete resource &apos;UserAppRest&apos;" element1="/UserAppRest" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1461153535850"/>&#x0A;<refactoring comment="Delete 4 resources" deleteContents="true" description="Delete 4 resources" element1="/jboss-javaee-multi" element2="/jboss-javaee-multi-ear" element3="/jboss-javaee-multi-ejb" element4="/jboss-javaee-multi-web" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="4" stamp="1461153932123"/>
+</session>

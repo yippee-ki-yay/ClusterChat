@@ -1,0 +1,30 @@
+<div>
+<h1>Chat Window</h1>
+
+  <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        Say hello to people in the chat
+                    </div>
+                        <ul id="chat_list">
+                           
+                        </ul>
+                     <div class="panel-body">
+                    
+                    </div>
+                    
+                     <div class="panel-footer">
+                         <div class="row">
+                             <div class="col-md-12">
+                                <input type="text" class="form-control" id="msg_text" placeholder="Type messages to other users">
+                             </div>
+                          
+                             
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+</div>

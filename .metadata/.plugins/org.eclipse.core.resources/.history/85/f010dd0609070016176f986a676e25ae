@@ -1,0 +1,18 @@
+(function() {
+	angular.module("chatApp").controller("chatController", chatController);
+	
+	chatController.$inject = ['$scope', '$websocket'];
+	
+	function chatController($scope, $websocket) {
+		
+		console.log("in chat");
+	
+		var dataStream = $websocket('wss://website.com/data');
+		
+		$scope.sendMsg = function()
+		{
+			console.log("msg");
+		}
+		
+	};
+})();

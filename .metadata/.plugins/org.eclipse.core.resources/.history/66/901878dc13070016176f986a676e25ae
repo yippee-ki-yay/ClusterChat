@@ -1,0 +1,31 @@
+package session;
+
+import java.util.ArrayList;
+
+import javax.ejb.Singleton;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+import model.Host;
+
+@Singleton
+@Path("/cluster")
+public class ClusterManagerBean 
+{
+	public ArrayList<Host> nodes = new ArrayList<Host>();
+	
+	//ako ovo nije master instanca, treba nam url do mastera
+	public String masterAddress = "";
+	
+	//gledamo ovo kao master cvor
+	//ovo pozivaju drugi cvorevi mi dodamo kod sebe sta su nam poslali i vratimo listu svih cvoreva
+	@GET
+	@Path("/test")
+	@Produces(MediaType.TEXT_PLAIN)
+	public void register(String address, String alias)
+	{
+		nodes.add(new Host(address, alias));
+	}
+}

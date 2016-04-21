@@ -1,0 +1,28 @@
+(function() {
+	angular.module("chatApp").controller("chatController", chatController);
+	
+	chatController.$inject = ['$scope', '$websocket'];
+	
+	function chatController($scope, $websocket) {
+		
+		console.log("in chat");
+	
+		$scope.msgList = [];
+		
+		var dataStream = $websocket('ws://localhost:8080/ChatAppClient/websocket');
+		
+		console.log(dataStream.readyState);
+		
+		dataStream.send("Hello for the otherside");
+		
+		dataStream.onMessage(function(message) {
+			console.log(message);
+		});
+		
+		$scope.sendMsg = function()
+		{
+			console.log("msg");
+		}
+		
+	};
+})();

@@ -1,0 +1,13 @@
+(function() {
+
+    angular
+        .module('apilaApp')
+        .service('apilaData', apilaData);
+
+    apilaData.$inject = ['$http', 'authentication'];
+
+    function apilaData($http, authentication) {
+    	
+    }
+    
+})();

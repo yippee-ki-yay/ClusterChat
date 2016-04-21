@@ -1,0 +1,11 @@
+package session;
+
+import javax.ejb.Remote;
+
+@Remote
+public interface ChatRemote 
+{
+	public String getMsg(String m);
+	
+	public String login(String username, String password);
+}

@@ -1,0 +1,13 @@
+(function() {
+
+    angular
+        .module('chatApp')
+        .service('userService', userService);
+
+    apilaData.$inject = ['$http'];
+
+    function apilaData($http, authentication) {
+    	
+    }
+    
+})();

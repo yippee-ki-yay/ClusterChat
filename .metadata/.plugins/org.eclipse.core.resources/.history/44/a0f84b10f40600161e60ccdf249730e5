@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="MasterNode">
+        <wb-resource deploy-path="/" source-path="/EarContent" tag="defaultRootSource"/>
+        <dependent-module archiveName="UserApp.jar" deploy-path="/" handle="module:/resource/UserApp/UserApp">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="ChatAppClient.war" deploy-path="/" handle="module:/resource/ChatAppClient/ChatAppClient">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="ChatAppEjb.jar" deploy-path="/" handle="module:/resource/ChatAppEjb/ChatAppEjb">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="UserAppClient.war" deploy-path="/" handle="module:/resource/UserAppClient/UserAppClient">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+    </wb-module>
+</project-modules>

@@ -1,0 +1,12 @@
+(function() {
+	angular.module("chatApp").controller("chatController", function($http) {
+		
+		console.log("in chat");
+	
+		$scope.sendMsg = function()
+		{
+			console.log("msg");
+		}
+		
+	});
+})();

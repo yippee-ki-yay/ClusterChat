@@ -1,0 +1,12 @@
+package session;
+
+import javax.ejb.Singleton;
+
+@Singleton
+public class ClusterManagerBean 
+{
+	public void register(String address, String alias)
+	{
+		
+	}
+}

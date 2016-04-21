@@ -1,0 +1,13 @@
+package model;
+
+public class UserData 
+{
+	private UserData(){}
+	
+	private UserData userData = new UserData();
+	
+	public UserData getInstance()
+	{
+		return userData;
+	}
+}

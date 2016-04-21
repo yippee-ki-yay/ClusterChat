@@ -1,0 +1,11 @@
+package websockets;
+
+import javax.ejb.Singleton;
+import javax.websocket.server.ServerEndpoint;
+
+@ServerEndpoint("/websocket")
+@Singleton
+public class ChatBackend 
+{
+
+}

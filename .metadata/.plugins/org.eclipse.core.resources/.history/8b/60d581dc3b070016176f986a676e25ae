@@ -1,0 +1,55 @@
+(function() {
+	angular.module("chatApp").controller("chatController", chatController);
+	
+	chatController.$inject = ['$scope', '$websocket', 'userService'];
+	
+	function chatController($scope, $websocket, userService) {
+	
+		$scope.msgList = [];
+		$scope.userList = [];
+		
+		var dataStream = $websocket('ws://localhost:8080/ChatAppClient/websocket');
+		
+		dataStream.onMessage(function(message) {
+			
+			var msg = JSON.parse(message.data);
+			
+			console.log(msg.type);
+			
+			if(msg.type == "msg") {
+				$scope.msgList.push(msg);
+			} else if(msg.type == "user") {
+				$scope.userList.push(msg.name);
+			}
+			
+			
+		});
+		
+		$scope.sendMsg = function()
+		{
+			var msgData = {"type" : "msg", "content" : $scope.msgText, "from": userService.getUser()};
+			
+			dataStream.send(msgData);
+			$scope.msgText = "";
+		}
+		
+		$scope.sendUserLogin = (function() {
+			var userData = {"type" : "user", "name" : userService.getUser()};
+			
+			dataStream.send(userData)
+			
+		})();
+		
+		function findUserInMsg(user, private) {
+			for(var i = 0; i < $scope.userList.length; ++i) {
+				var index = str.search($scope.userList[i].name + ":");
+				if(index != -1){
+					return $scope.userList[i].name.substr(index, $scope.userList[i].name.length-1);
+				} else {
+					return $scope.userList[i].name;
+				}
+			}
+		}
+		
+	};
+})();

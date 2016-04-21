@@ -1,0 +1,21 @@
+package session;
+
+import java.util.ArrayList;
+
+import javax.ejb.Singleton;
+
+@Singleton
+public class ClusterManagerBean 
+{
+	public ArrayList<String> nodes = new ArrayList<String>();
+	
+	//ako ovo nije master instanca, treba nam url do mastera
+	public String masterAddress = "";
+	
+	//gledamo ovo kao master cvor
+	//
+	public void register(String address, String alias)
+	{
+		
+	}
+}

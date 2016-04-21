@@ -1,0 +1,12 @@
+package model;
+
+import java.util.Date;
+
+public class Message 
+{
+	private User from;
+	private User to;
+	private Date date;
+	private String Subject;
+	private String content;
+}

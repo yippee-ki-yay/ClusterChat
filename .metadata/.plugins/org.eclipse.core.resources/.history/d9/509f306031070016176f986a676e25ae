@@ -1,0 +1,13 @@
+(function() {
+
+    angular
+        .module('chatApp')
+        .service('userService', userService);
+
+    userService.$inject = ['$http'];
+
+    function userService($http, authentication) {
+    	
+    }
+    
+})();

@@ -1,0 +1,38 @@
+package session;
+
+import javax.ejb.LocalBean;
+import javax.ejb.Remote;
+import javax.ejb.Stateless;
+import javax.websocket.server.PathParam;
+import javax.ws.rs.*;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+import org.jboss.resteasy.annotations.Form;
+
+@Remote
+@Path("/test")
+@Stateless
+public class ChatBean implements ChatRemote
+{
+	@GET
+	@Path("/hello")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String Hello()
+	{
+		return "Hello";
+	}
+	
+	@GET
+	@Path("/getmsg/{msg}")
+	@Produces(MediaType.TEXT_PLAIN)
+	@Override
+	public String getMsg(@PathParam("msg") String msg) 
+	{
+		System.out.println("Hi you hit the rest backend /getmsg/{msg}");
+		
+		return msg;
+	}
+
+}

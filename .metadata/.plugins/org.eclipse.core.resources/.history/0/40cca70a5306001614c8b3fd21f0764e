@@ -1,0 +1,13 @@
+package session;
+
+import javax.ejb.Local;
+
+import model.User;
+
+@Local
+public interface UserBeanLocal {
+
+	public String login(User u);
+	
+	public String register(User u);
+}

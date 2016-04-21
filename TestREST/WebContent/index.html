@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script src="js/jquery-1.11.0.js">
+</script>
+<title>Insert title here</title>
+</head>
+<body>
+	<script>
+$(document).ready(function(){
+  $("button").click(function(){
+	  var mydata = '{"ime":"pera", "prezime":"peric"}';
+	  jQuery.ajax ({
+		    url: "http://localhost:8080/TestREST/rest/students/jedan",
+		    type: "POST",
+		    data: mydata,//JSON.stringify({data:"test"}),
+		    dataType: "json",
+		    contentType: "application/json; charset=utf-8",
+		    success: function(data, status){
+		    	alert('ime: ' + data.ime + ', prezime: ' + data.prezime + ', status: ' + status);
+		    }
+		});
+	 
+
+  });
+
+});
+</script>
+
+<a href="/TestREST/rest/students/test">Test</a><br />
+<a href="/TestREST/rest/students/hello/Pera">PathParam demonstracija</a>. Obratiti pažnju na poslednji deo putanje, koji je u stvari parametar ("Pera").<br />
+<a href="/TestREST/rest/students/helloQ?s=Pera">QueryParam demonstracija.</a>Parametar forme "s" je parametar.<br />
+<a href="/TestREST/rest/students/napravi/1;ime=Pera;prezime=Peric">Kompleksni PathParam.</a>Deo putanje sadrži podelemente: ime i prezime.<br />
+<a href="/TestREST/rest/students/testHeader">Demostracija prosleđivanja atributa zaglavlja.</a>Vraća User-Agent.<br />
+<a href="/TestREST/rest/students/testSession">Demostracija prosleđivanja HTTP zahteva (i sesije u njemu).</a>Obavezno pozvati prvi primer(rest/studenti/test).<br />
+<form method="post" action="/TestREST/rest/students/form">
+	<input type="text" name="ime" value="pera"/><br />
+	<input type="text" name="prezime" value="peric"/><br />
+	<input type="submit" name="Pošalji" />
+</form>
+<button>REST poziv sa JSON parametrom i povratnom vrednošću</button>
+
+<br />
+<a href = "chat.html">Chat upotrebom web socket tehnologije.</a>
+
+<br />
+<a href = "HTML5/index.html">Ostatak HTML5 showcase-a.</a>
+
+<br />
+<a href = "server-side-js/index.html">Server side JavaScript</a>
+
+</body>
+ 
+</html>
