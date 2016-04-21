@@ -10,6 +10,8 @@ public class UserData
 	
 	public ArrayList<User> userList = new ArrayList<User>();
 	
+	public ArrayList<User> currentUsers = new ArrayList<User>();
+	
 	public static UserData getInstance()
 	{
 		return userData;

@@ -2,47 +2,92 @@ package session;
 
 import java.util.ArrayList;
 
+import javax.ejb.LocalBean;
 import javax.ejb.Singleton;
+import javax.ejb.Stateless;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.jboss.resteasy.client.jaxrs.ResteasyClient;
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
 import model.Host;
+import model.Nodes;
+import model.User;
 
-@Singleton
+@LocalBean
+@Stateless
 @Path("/cluster")
-public class ClusterManagerBean 
-{
-	public ArrayList<Host> nodes = new ArrayList<Host>();
-	
-	//ako ovo nije master instanca, treba nam url do mastera
-	public String masterAddress = "";
+public class ClusterManagerBean implements ClusterManagerRemote
+{	
+	//NON-MASTER   upismo ko je master i posaljemo mu register zahtev on nam vrati listu do sada to upisemo
+	public String masterAddress = "master";
+	public ClusterManagerBean() 
+	{
+		ResteasyClient client = new ResteasyClientBuilder().build();
+        ResteasyWebTarget target = client.target( masterAddress + "/ChatAppClient/rest/cluster/register/");
+        Response response = target.request().post(Entity.entity(new Host("nasa addr", "komp2"), MediaType.APPLICATION_JSON));
+        
+        //nekako izvucemo listu odavde
+        ArrayList<Host> ret = response.readEntity(ArrayList.class);
+        System.out.println(ret);
+       
+	}
 	
 	//gledamo ovo kao master cvor
 	//ovo pozivaju drugi cvorevi mi dodamo kod sebe sta su nam poslali i vratimo listu svih cvoreva
-	@GET
+	@POST
 	@Path("/register")
-	@Produces(MediaType.TEXT_PLAIN)
-	public ArrayList<Host> register(String address, String alias)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public ArrayList<Host> register(Host h)
 	{
-		nodes.add(new Host(address, alias));
-		
+		Nodes.getInstance().nodes.add(h);
+		System.out.println("Pogodio register");
 		//pozovemo od drugih register metodu da oni ubace kod sebe novog cvoras (OVO SAMO MASTER)
+		for(Host n : Nodes.getInstance().nodes)
+		{
+			ResteasyClient client = new ResteasyClientBuilder().build();
+	        ResteasyWebTarget target = client.target( n.getAddress() + "/ChatAppClient/rest/cluster/register/");
+	        Response response = target.request().post(Entity.entity(h, MediaType.APPLICATION_JSON));
+	        String ret = response.readEntity(String.class);
+	        System.out.println(ret);
+		}
 		
+		
+		
+		//isto samo MASTER
 		//posaljemo listu cvorova onom ko se sad registrovao
-		return nodes;
+		return Nodes.getInstance().nodes;
+	}
+	
+	@GET
+	@Path("/getmsg/{msg}")
+	@Produces(MediaType.TEXT_PLAIN)
+	@Override
+	public String getMsg(@PathParam("msg") String m) 
+	{
+		return "Hello " + m;
 	}
 	
 	@GET
 	@Path("/unregister")
-	@Produces(MediaType.TEXT_PLAIN)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	void unregister(Host h)
 	{
-		nodes.remove(h);
+		Nodes.getInstance().nodes.remove(h);
 		
 		//posaljemo svima da se unregistrovao (OVO SAMO MASTER)
-		for(Host currHost : nodes)
+		for(Host currHost : Nodes.getInstance().nodes)
 		{
 			//opali rest client request
 		}

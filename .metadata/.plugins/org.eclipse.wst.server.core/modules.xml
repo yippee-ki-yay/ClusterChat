@@ -2,6 +2,7 @@
 <modules>
   <module moduleId="org.eclipse.jst.jee.server:TestEAR" serverId="WildFly  8.x1461078396040"/>
   <module moduleId="org.eclipse.jst.jee.server:MasterNode" serverId="WildFly  8.x1461078396040"/>
+  <module moduleId="org.eclipse.jst.jee.server:ChatAppEjb" serverId="WildFly  8.x1461078396040"/>
   <module moduleId="org.eclipse.jst.jee.server:ChatAppEar"/>
   <module moduleId="org.eclipse.jst.jee.server:ChatAppClient" serverId="WildFly  8.x1461078396040"/>
   <module moduleId="org.eclipse.jst.jee.server:UserApp"/>

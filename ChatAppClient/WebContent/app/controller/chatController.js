@@ -1,9 +1,9 @@
 (function() {
 	angular.module("chatApp").controller("chatController", chatController);
 	
-	chatController.$inject = ['$scope', '$websocket', 'userService'];
+	chatController.$inject = ['$scope', '$websocket', 'userService', '$location'];
 	
-	function chatController($scope, $websocket, userService) {
+	function chatController($scope, $websocket, $location, userService) {
 	
 		$scope.msgList = [];
 		$scope.userList = [];
@@ -30,7 +30,9 @@
 			var privateMsg = false;
 			var toUser = "";
 			
-			findUserInMsg(user, privateMsg, toUser);
+			findUserInMsg(privateMsg, toUser);
+			
+			console.log(privateMsg + " : " + toUser);
 			
 			var msgData = {"type" : "msg", "content" : $scope.msgText, "from": userService.getUser()};
 			
@@ -49,7 +51,15 @@
 			
 		})();
 		
-		function findUserInMsg(user, privateMsg, toUser) {
+		$scope.logout = function() {
+			console.log("logout");
+			userService.logout();
+			
+			$location.path("/login/");
+			
+		}
+		
+		function findUserInMsg( privateMsg, toUser) {
 			for(var i = 0; i < $scope.userList.length; ++i) {
 				var index = str.search($scope.userList[i].name + ":");
 				if(index != -1){

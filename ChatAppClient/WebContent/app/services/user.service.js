@@ -19,9 +19,14 @@
     		return username;
     	}
     	
+    	function logout() {
+    		username = "";
+    	}
+    	
     	return {
     		login : login,
-    		getUser : getUser
+    		getUser : getUser,
+    		logout : logout
     	}
     	
     }

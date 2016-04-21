@@ -13,8 +13,9 @@
 			
 			$http.post('rest/users/login/', content).
 				then(function(resp) {
-					if (resp.data == "true") {
-						userService.login($scope.username);
+					console.log(resp);
+					if (resp.data != false) {
+						userService.login(resp.data);
 						$location.path("/chat/");
 					}else {
 						$scope.errorMsg = "The username/password are incorrect or you are not registered";
@@ -23,7 +24,7 @@
 				function(resp) {
 					console.log(resp);
 				}
-				)
+				);
 		}
 		
 	}

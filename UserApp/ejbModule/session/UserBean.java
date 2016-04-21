@@ -56,7 +56,8 @@ public class UserBean implements UserBeanLocal {
 			if(currUser.getUsername().equals(u.getUsername()) && 
 				currUser.getPassword().equals(u.getPassword()))
 			{
-				return "true";
+				UserData.getInstance().currentUsers.add(u);
+				return u.getUsername();
 			}
 		}
 		
@@ -84,6 +85,26 @@ public class UserBean implements UserBeanLocal {
 		UserData.getInstance().userList.add(u);
 		
 		System.out.println("Ima: " + UserData.getInstance().userList.size());
+		
+		return "true";
+	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/list")
+	@Override
+	public ArrayList<User> listUsers() 
+	{
+		return UserData.getInstance().currentUsers;
+	}
+
+	@GET
+	@Produces(MediaType.TEXT_PLAIN)
+	@Path("/logout")
+	@Override
+	public String logout(User u) 
+	{
+		UserData.getInstance().currentUsers.remove(u);
 		
 		return "true";
 	}

@@ -1,0 +1,76 @@
+package session;
+
+import java.util.ArrayList;
+
+import javax.ejb.Singleton;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.jboss.resteasy.client.jaxrs.ResteasyClient;
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
+
+import model.Host;
+import model.Nodes;
+import model.User;
+
+@Singleton
+@Path("/cluster")
+public class ClusterManagerBean 
+{	
+	//NON-MASTER
+	public String masterAddress = "";
+	
+	public ClusterManagerBean() 
+	{
+		ResteasyClient client = new ResteasyClientBuilder().build();
+        ResteasyWebTarget target = client.target( masterAddress + "/ChatAppClient/rest/cluster/register/");
+        Response response = target.request().post(Entity.entity(new Host("nasa addr", "komp2"), MediaType.APPLICATION_JSON));
+        String ret = response.readEntity(String.class);
+        System.out.println(ret);
+	}
+	
+	//gledamo ovo kao master cvor
+	//ovo pozivaju drugi cvorevi mi dodamo kod sebe sta su nam poslali i vratimo listu svih cvoreva
+	@GET
+	@Path("/register")
+	@Produces(MediaType.TEXT_PLAIN)
+	public ArrayList<Host> register(Host h)
+	{
+		Nodes.getInstance().nodes.add(h);
+		
+		//pozovemo od drugih register metodu da oni ubace kod sebe novog cvoras (OVO SAMO MASTER)
+		for(Host n : Nodes.getInstance().nodes)
+		{
+			ResteasyClient client = new ResteasyClientBuilder().build();
+	        ResteasyWebTarget target = client.target( n.getAddress() + "/ChatAppClient/rest/cluster/register/");
+	        Response response = target.request().post(Entity.entity(h, MediaType.APPLICATION_JSON));
+	        String ret = response.readEntity(String.class);
+	        System.out.println(ret);
+		}
+		
+		
+		
+		//isto samo MASTER
+		//posaljemo listu cvorova onom ko se sad registrovao
+		return Nodes.getInstance().nodes;
+	}
+	
+	@GET
+	@Path("/unregister")
+	@Produces(MediaType.TEXT_PLAIN)
+	void unregister(Host h)
+	{
+		Nodes.getInstance().nodes.remove(h);
+		
+		//posaljemo svima da se unregistrovao (OVO SAMO MASTER)
+		for(Host currHost : Nodes.getInstance().nodes)
+		{
+			//opali rest client request
+		}
+	}
+}

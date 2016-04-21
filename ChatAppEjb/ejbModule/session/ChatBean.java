@@ -1,23 +1,23 @@
 package session;
 
-import java.io.File;
-import java.io.IOException;
-
 import javax.ejb.LocalBean;
-import javax.ejb.Remote;
 import javax.ejb.Stateless;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
+import model.Host;
+import model.Nodes;
 import model.User;
 
 @LocalBean
@@ -58,7 +58,13 @@ public class ChatBean implements ChatRemote
         String ret = response.readEntity(String.class);
         System.out.println(ret);
 		
-		return ret;
+        //prodjemo kroz sve nodove i svima posaljemo da imamo novog usera
+        for(Host h : Nodes.getInstance().nodes)
+        {
+        	//add the bitches
+        }
+        
+		return "sone";
 	}
 
 	@POST

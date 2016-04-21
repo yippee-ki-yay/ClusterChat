@@ -1,0 +1,16 @@
+package session;
+
+import java.util.ArrayList;
+
+import javax.ejb.Remote;
+
+import model.Host;
+
+@Remote
+public interface ClusterManagerRemote 
+{
+	public ArrayList<Host> register(Host h);
+	
+	public String getMsg(String m);
+
+}

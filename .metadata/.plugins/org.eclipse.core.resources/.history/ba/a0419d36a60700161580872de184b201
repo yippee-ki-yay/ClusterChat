@@ -1,0 +1,13 @@
+package model;
+
+public class Nodes 
+{
+	private Nodes() {}
+	
+	private static Nodes nodes = new Nodes();
+	
+	public static getInstance()
+	{
+		return nodes;
+	}
+}
