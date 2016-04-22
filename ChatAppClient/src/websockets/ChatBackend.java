@@ -46,6 +46,8 @@ public class ChatBackend
 					
 						s.getBasicRemote().sendText(msg, last);
 						log.info("Sending '" + msg + "' to : " + s.getId());
+						
+						//send to Chat app to broadcast to other servers
 					
 				}
 			}

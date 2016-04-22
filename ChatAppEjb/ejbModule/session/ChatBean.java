@@ -64,7 +64,7 @@ public class ChatBean implements ChatRemote
         	//add the bitches
         }
         
-		return "sone";
+		return ret;
 	}
 
 	@POST
