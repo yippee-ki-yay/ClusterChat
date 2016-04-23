@@ -15,5 +15,6 @@
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="lib" path="/TestResteasyClient/lib/jettison-1.3.2.jar"/>
 	<classpathentry kind="lib" path="/TestResteasyClient/lib/jackson-databind-2.4.1.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ChatAppEjb"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

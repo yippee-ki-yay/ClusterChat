@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kb-project>
- <depends-on-projects/>
+ <depends-on-projects>
+  <project name="ChatAppEjb"/>
+ </depends-on-projects>
  <used-by-projects/>
  <paths>
   <path value="/home/nenad/Desktop/siebog/wildfly-9.x/modules/system/layers/base/javax/jms/api/main/jboss-jms-api_2.0_spec-1.0.0.Final.jar"/>

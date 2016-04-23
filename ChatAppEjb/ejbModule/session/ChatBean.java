@@ -1,5 +1,7 @@
 package session;
 
+import java.util.ArrayList;
+
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
@@ -25,23 +27,6 @@ import model.User;
 @Stateless
 public class ChatBean implements ChatRemote
 {
-	@GET
-	@Path("/test")
-	@Produces(MediaType.TEXT_PLAIN)
-	public String test() {
-		
-		
-		return "OK";
-	}
-	
-	@GET
-	@Path("/getmsg/{msg}")
-	@Produces(MediaType.TEXT_PLAIN)
-	@Override
-	public String getMsg(@PathParam("msg") String m) 
-	{
-		return "Hello " + m;
-	}
 
 	@POST
 	@Path("/login")
@@ -67,6 +52,19 @@ public class ChatBean implements ChatRemote
 		return ret;
 	}
 
+	@GET
+	@Path("/himaster")
+	@Produces(MediaType.TEXT_PLAIN)
+	@Override
+	public String himaster()
+	{
+		ResteasyClient client = new ResteasyClientBuilder().build();
+        ResteasyWebTarget target = client.target("http://192.168.1.100:8080/ChatAppClient/rest/users/registerHost/");
+        Response response = target.request().post(Entity.entity(new Host("nasa addr", "komp2"), MediaType.APPLICATION_JSON));
+		
+		return "OK";
+	}
+	
 	@POST
 	@Path("/register")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -81,5 +79,53 @@ public class ChatBean implements ChatRemote
 		
 		return ret;
 	}
+	
+	//gledamo ovo kao master cvor
+		//ovo pozivaju drugi cvorevi mi dodamo kod sebe sta su nam poslali i vratimo listu svih cvoreva
+		@POST
+		@Path("/registerHost")
+		@Consumes(MediaType.APPLICATION_JSON)
+		@Produces(MediaType.APPLICATION_JSON)
+		public ArrayList<Host> registerHost(Host h)
+		{
+			Nodes.getInstance().nodes.add(h);
+			System.out.println("Pogodio register");
+			//pozovemo od drugih register metodu da oni ubace kod sebe novog cvoras (OVO SAMO MASTER)
+			/*for(Host n : Nodes.getInstance().nodes)
+			{
+				ResteasyClient client = new ResteasyClientBuilder().build();
+		        ResteasyWebTarget target = client.target( n.getAddress() + "/ChatAppClient/rest/cluster/register/");
+		        Response response = target.request().post(Entity.entity(h, MediaType.APPLICATION_JSON));
+		        String ret = response.readEntity(String.class);
+		        System.out.println(ret);
+			}*/
+			
+			
+			
+			//isto samo MASTER
+			//posaljemo listu cvorova onom ko se sad registrovao
+			return Nodes.getInstance().nodes;
+		}
+		
+		@GET
+		@Path("/unregisterHost")
+		@Consumes(MediaType.APPLICATION_JSON)
+		@Produces(MediaType.APPLICATION_JSON)
+		void unregisterHost(Host h)
+		{
+			Nodes.getInstance().nodes.remove(h);
+			
+			//posaljemo svima da se unregistrovao (OVO SAMO MASTER)
+			for(Host currHost : Nodes.getInstance().nodes)
+			{
+				//opali rest client request
+			}
+		}
+
+		@Override
+		public String getMsg(String m) {
+			// TODO Auto-generated method stub
+			return null;
+		}
 
 }

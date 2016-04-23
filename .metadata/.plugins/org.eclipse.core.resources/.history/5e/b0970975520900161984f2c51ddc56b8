@@ -1,0 +1,14 @@
+package websockets;
+
+import java.util.ArrayList;
+
+import javax.ejb.Remote;
+
+@Remote
+public interface ClusterManagerRemote 
+{
+	public ArrayList<Host> register(Host h);
+	
+	public String getMsg(String m);
+
+}

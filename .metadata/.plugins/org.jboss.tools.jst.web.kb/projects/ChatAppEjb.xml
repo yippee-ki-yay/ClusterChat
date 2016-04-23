@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kb-project>
  <depends-on-projects/>
- <used-by-projects/>
+ <used-by-projects>
+  <project name="ChatAppClient"/>
+ </used-by-projects>
  <paths>
   <path value="/home/nenad/Desktop/siebog/wildfly-9.x/modules/system/layers/base/javax/jms/api/main/jboss-jms-api_2.0_spec-1.0.0.Final.jar"/>
   <path value="/home/nenad/Desktop/siebog/wildfly-9.x/modules/system/layers/base/javax/batch/api/main/jboss-batch-api_1.0_spec-1.0.0.Final.jar"/>
@@ -117,7 +119,6 @@
   <path value="/home/nenad/Desktop/siebog/wildfly-9.x/modules/system/layers/base/javax/el/api/main/jboss-el-api_3.0_spec-1.0.4.Final.jar"/>
  </paths>
  <validation>
-  <core validator-id="jboss.cdi.core"/>
   <core validator-id="batch-verification"/>
   <el/>
  </validation>

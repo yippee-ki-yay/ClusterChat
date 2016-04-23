@@ -15,14 +15,8 @@ import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
-import org.jboss.resteasy.client.jaxrs.ResteasyClient;
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
-import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.jboss.security.auth.spi.Users.User;
+import model.Nodes;
 
 @ServerEndpoint("/websocket")
 @Singleton
@@ -41,6 +35,7 @@ public class ChatBackend
 	public void onOpen(Session session) {
 		if (!sessions.contains(session)) {
 			sessions.add(session);
+			
 			sessionsMap.put("", session);
 			log.info("Dodao sesiju: " + session.getId() + " u endpoint-u: " + this.hashCode() + ", ukupno sesija: " + sessions.size());
 		}
@@ -51,7 +46,7 @@ public class ChatBackend
 		try {
 			if (session.isOpen()) {
 				
-				
+				System.out.println(Nodes.getInstance().nodes.size());
 				String[] parts = msg.split(":");
 				if(parts.length > 1)
 				{
