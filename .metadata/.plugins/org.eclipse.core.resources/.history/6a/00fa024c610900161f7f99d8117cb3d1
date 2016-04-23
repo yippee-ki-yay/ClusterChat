@@ -15,9 +15,6 @@ import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
-import javax.websocket.*;
-
-import com.sun.org.apache.xerces.internal.util.URI;
 
 import model.Host;
 import model.Nodes;
@@ -86,7 +83,6 @@ public class ChatBackend
 				for(Host h : Nodes.getInstance().nodes)
 				{
 					
-					sendToNodes("ws://10.42.0.88:8080/ChatAppClient/websocket", msg);
 				}
 				
 				//posaljemo svim aktivnim sesijama na cvoru
@@ -104,10 +100,9 @@ public class ChatBackend
 		}
 	}
 	
-	public void sendToNodes(String addr, String message)
+	public void sendToNodes(String addr)
 	{
-		WebSocketClient c = new WebSocketClient(addr);
-		c.sendMessage(message);
+		final WebsocketClientEndpoint clientEndPoint = new WebsocketClientEndpoint(new URI("wss://real.okcoin.cn:10440/websocket/okcoinapi"));
 	}
 
 	@OnClose

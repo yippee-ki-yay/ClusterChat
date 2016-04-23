@@ -2272,3 +2272,15 @@ Command-line arguments:  -data file:/home/nenad/Desktop/web/ -os linux -ws gtk -
 
 !ENTRY org.jboss.ide.eclipse.as.core 4 16973826 2016-04-23 15:56:01.264
 !MESSAGE The server was shutdown forcefully. All processes were terminated.
+
+!ENTRY org.jboss.ide.eclipse.as.core 4 16842784 2016-04-23 16:17:49.698
+!MESSAGE 
+
+!ENTRY org.jboss.ide.eclipse.as.core 4 16973826 2016-04-23 16:17:50.366
+!MESSAGE The server was shutdown forcefully. All processes were terminated.
+
+!ENTRY org.jboss.ide.eclipse.as.core 4 16842784 2016-04-23 17:10:49.642
+!MESSAGE 
+
+!ENTRY org.jboss.ide.eclipse.as.core 4 16973826 2016-04-23 17:10:51.305
+!MESSAGE The server was shutdown forcefully. All processes were terminated.

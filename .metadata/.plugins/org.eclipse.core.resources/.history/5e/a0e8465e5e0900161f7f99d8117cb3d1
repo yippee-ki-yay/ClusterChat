@@ -15,11 +15,7 @@ import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
-import javax.websocket.*;
 
-import com.sun.org.apache.xerces.internal.util.URI;
-
-import model.Host;
 import model.Nodes;
 
 @ServerEndpoint("/websocket")
@@ -83,16 +79,9 @@ public class ChatBackend
 						
 				}
 				
-				for(Host h : Nodes.getInstance().nodes)
-				{
-					
-					sendToNodes("ws://10.42.0.88:8080/ChatAppClient/websocket", msg);
-				}
-				
 				//posaljemo svim aktivnim sesijama na cvoru
 				for (Session s : sessions) {
 						s.getBasicRemote().sendText(msg, last);
-						
 				}
 			}
 		} catch (IOException e) {
@@ -102,12 +91,6 @@ public class ChatBackend
 				e1.printStackTrace();
 			}
 		}
-	}
-	
-	public void sendToNodes(String addr, String message)
-	{
-		WebSocketClient c = new WebSocketClient(addr);
-		c.sendMessage(message);
 	}
 
 	@OnClose

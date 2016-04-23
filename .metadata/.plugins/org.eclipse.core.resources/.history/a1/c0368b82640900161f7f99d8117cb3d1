@@ -85,8 +85,7 @@ public class ChatBackend
 				
 				for(Host h : Nodes.getInstance().nodes)
 				{
-					
-					sendToNodes("ws://10.42.0.88:8080/ChatAppClient/websocket", msg);
+					sendToNodes(h.getAddress(), msg);
 				}
 				
 				//posaljemo svim aktivnim sesijama na cvoru

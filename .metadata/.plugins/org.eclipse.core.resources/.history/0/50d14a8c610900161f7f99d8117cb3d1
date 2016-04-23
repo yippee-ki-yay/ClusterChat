@@ -86,7 +86,6 @@ public class ChatBackend
 				for(Host h : Nodes.getInstance().nodes)
 				{
 					
-					sendToNodes("ws://10.42.0.88:8080/ChatAppClient/websocket", msg);
 				}
 				
 				//posaljemo svim aktivnim sesijama na cvoru
@@ -104,10 +103,11 @@ public class ChatBackend
 		}
 	}
 	
-	public void sendToNodes(String addr, String message)
+	public void sendToNodes(String addr)
 	{
-		WebSocketClient c = new WebSocketClient(addr);
-		c.sendMessage(message);
+		WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+        String uri = "ws://echo.websocket.org:80/";
+        System.out.println("Connecting to " + uri);
 	}
 
 	@OnClose
