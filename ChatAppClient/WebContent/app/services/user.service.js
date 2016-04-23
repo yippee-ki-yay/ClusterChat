@@ -4,23 +4,21 @@
         .module('chatApp')
         .service('userService', userService);
 
-    //userService.$inject = ['$http'];
+    userService.$inject = ['$cookies'];
 
-    function userService() {
-    	
-    	var username;
+    function userService($cookies) {
     	
     	//just a temp function keeps track of the name
     	function login(user) {
-    		username = user;
+    		$cookies.username = user;
     	}
     	
     	function getUser() {
-    		return username;
+    		return $cookies.username;
     	}
     	
     	function logout() {
-    		username = "";
+    		$cookies.remove("username");
     	}
     	
     	return {

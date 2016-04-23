@@ -1,0 +1,32 @@
+(function() {
+
+    angular
+        .module('chatApp')
+        .service('userService', userService);
+
+    userService.$inject = ['$http'];
+
+    function userService($cookies) {
+    	
+    	//just a temp function keeps track of the name
+    	function login(user) {
+    		$cookies.username = user;
+    	}
+    	
+    	function getUser() {
+    		return $cookies.username;
+    	}
+    	
+    	function logout() {
+    		$cookies.username = "";
+    	}
+    	
+    	return {
+    		login : login,
+    		getUser : getUser,
+    		logout : logout
+    	}
+    	
+    }
+    
+})();

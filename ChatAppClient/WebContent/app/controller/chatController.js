@@ -1,14 +1,29 @@
 (function() {
 	angular.module("chatApp").controller("chatController", chatController);
 	
-	chatController.$inject = ['$scope', '$websocket', 'userService', '$location'];
+	chatController.$inject = ['$scope', '$websocket', '$location', 'userService', '$http'];
 	
-	function chatController($scope, $websocket, $location, userService) {
+	function chatController($scope, $websocket, $location, userService, $http) {
 	
 		$scope.msgList = [];
 		$scope.userList = [];
 		
-		var dataStream = $websocket('ws://localhost:8080/ChatAppClient/websocket');
+		var dataStream = $websocket('ws://192.168.1.100:8080/ChatAppClient/websocket');
+		
+		 $http.get("http://192.168.1.100:8080/UserAppClient/rest/users/list/")
+		    .then(function(response) {
+		        console.log(response);
+		        angular.forEach(response.data, function(value, key) {
+		        	if(value.username == userService.getUser()) {
+		        		$scope.userList.push(value.username + " (You)");
+		        	} else {
+		        		$scope.userList.push(value.username);
+		        	}
+		        	
+		        });
+		        
+		        
+		    });
 		
 		dataStream.onMessage(function(message) {
 			
@@ -17,9 +32,17 @@
 			console.log(msg.type);
 			
 			if(msg.type == "msg") {
+				
+				if(msg.hasOwnProperty("to")) {
+					msg.content = "(private msg) " + msg.content;
+				}
+				
 				$scope.msgList.push(msg);
 			} else if(msg.type == "user") {
-				$scope.userList.push(msg.name);
+				if(msg.name != userService.getUser()) {
+					$scope.userList.push(msg.name);
+				}
+				
 			}
 			
 			
@@ -27,17 +50,19 @@
 		
 		$scope.sendMsg = function()
 		{
-			var privateMsg = false;
-			var toUser = "";
 			
-			findUserInMsg(privateMsg, toUser);
+			var privData = {privateMsg: false, toUser: ""};
 			
-			console.log(privateMsg + " : " + toUser);
+			var msgToServer = findUserInMsg(privData);
 			
-			var msgData = {"type" : "msg", "content" : $scope.msgText, "from": userService.getUser()};
+			console.log(privData.privateMsg + " : " + privData.toUser);
 			
-			if(privateMsg) {
-				msgData.to = toUser;
+			var msgData;
+			
+			if(privData.privateMsg) {
+				msgData = {"to": privData.toUser, "type" : "msg", "content" : msgToServer, "from": userService.getUser()};
+			} else {
+				msgData = {"type" : "msg", "content" : msgToServer, "from": userService.getUser()};
 			}
 			
 			dataStream.send(msgData);
@@ -45,7 +70,7 @@
 		}
 		
 		$scope.sendUserLogin = (function() {
-			var userData = {"type" : "user", "name" : userService.getUser()};
+			var userData = {"name" : userService.getUser(), "type" : "user"};
 			
 			dataStream.send(userData)
 			
@@ -59,18 +84,29 @@
 			
 		}
 		
-		function findUserInMsg( privateMsg, toUser) {
+		function findUserInMsg( privData) {
 			for(var i = 0; i < $scope.userList.length; ++i) {
-				var index = str.search($scope.userList[i].name + ":");
+				var nameNick = $scope.userList[i] + ":";
+				var index = $scope.msgText.search(nameNick);
 				if(index != -1){
-					privateMsg = true;
-					toUser = $scope.userList[i].name.substr(0, $scope.userList[i].name.length-1);
-					return $scope.userList[i].name.substr(index, $scope.userList[i].name.length-1);
-				} else {
-					privateMsg = false;
-					return $scope.userList[i].name;
-				}
+					privData.privateMsg = true;
+					privData.toUser = $scope.userList[i].substr(0, $scope.userList[i].length);
+					return $scope.msgText.substr(index + $scope.userList[i].length+1, $scope.msgText.length);
+				} 
 			}
+			
+			privData.privateMsg = false;
+			return $scope.msgText;
+		}
+		
+		function ArrNoDupe(a) {
+		    var temp = {};
+		    for (var i = 0; i < a.length; i++)
+		        temp[a[i]] = true;
+		    var r = [];
+		    for (var k in temp)
+		        r.push(k);
+		    return r;
 		}
 		
 	};

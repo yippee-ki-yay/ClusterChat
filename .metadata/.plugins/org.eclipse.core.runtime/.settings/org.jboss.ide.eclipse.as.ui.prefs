@@ -3,6 +3,6 @@ org.jboss.ide.eclipse.as.classpath.ui.containers.custom.CustomClasspathPreferenc
 org.jboss.ide.eclipse.as.ui.defaultWebServer=WildFly  8.x1461078396040
 org.jboss.ide.eclipse.as.ui.preferences.disabled.automatic.server.view=true
 org.jboss.ide.eclipse.as.ui.preferences.enabledDecorators.1=true
-org.jboss.ide.eclipse.as.ui.preferences.runtime.last.type.org.jboss.ide.eclipse.as.runtime.wildfly.80=/home/nenad/Desktop/siebog/wildfly-9.x
-org.jboss.ide.eclipse.as.ui.wizards.LAST_RUNTIME_CREATED=WildFly 8.x Runtime
-org.jboss.ide.eclipse.as.ui.wizards.LAST_SERVER_CREATED=WildFly  8.x1461078396040
+org.jboss.ide.eclipse.as.ui.preferences.runtime.last.type.org.jboss.ide.eclipse.as.runtime.wildfly.80=/home/nenad/Desktop/siebog 1/wildfly-9.x
+org.jboss.ide.eclipse.as.ui.wizards.LAST_RUNTIME_CREATED=Drugi server
+org.jboss.ide.eclipse.as.ui.wizards.LAST_SERVER_CREATED=WildFly  8.x (1)1461341599428

@@ -1,4 +1,4 @@
-var chatApp = angular.module("chatApp", ["ui.bootstrap", "ngRoute", "ngWebSocket"]);
+var chatApp = angular.module("chatApp", ["ui.bootstrap", "ngRoute", "ngWebSocket", "ngCookies"]);
 
 chatApp.config(function($routeProvider) {
 	$routeProvider

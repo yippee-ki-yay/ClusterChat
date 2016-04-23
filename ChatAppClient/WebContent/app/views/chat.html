@@ -21,7 +21,7 @@
                 <div class="panel panel-primary">
                     <div class="panel-heading">
                         Start chatting in this awesome chat right now!
-                        <button class="btn btn-danger" ng-click="logout()"></button>
+                        <button class="btn btn-danger pull-right" ng-click="logout()">Logout</button>
                     </div>
                         <ul id="chat_list">
                            
@@ -37,7 +37,7 @@
                      <div class="panel-footer">
                          <div class="row">
                              <div class="col-md-10">
-                                <input type="text" ng-keyup="$event.keyCode == 13 && sendMsg()" class="form-control" ng-model="msgText" placeholder="Type messages to other users">
+                                <input type="text" ng-keyup="$event.keyCode == 13 && sendMsg()" class="form-control" ng-model="msgText" placeholder="Type username: to send private msg to users">
                              </div>
                           	   <div class="col-md-2">
                                	<button type="button" class="btn btn-success" ng-click="sendMsg()">Submit</button>
