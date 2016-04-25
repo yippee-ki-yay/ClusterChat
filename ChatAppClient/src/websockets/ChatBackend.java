@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,8 +28,7 @@ import model.Nodes;
 public class ChatBackend 
 {
 	Logger log = Logger.getLogger("Websockets endpoint");
-	List<Session> sessions = new ArrayList<Session>();
-	Timer t = new Timer();
+
 	HashMap<String, Session> sessionsMap = new HashMap<String, Session>();
 
 	public ChatBackend() 
@@ -37,18 +37,27 @@ public class ChatBackend
 		
 	@OnOpen
 	public void onOpen(Session session) {
-		if (!sessions.contains(session)) {
-			sessions.add(session);
 			
-			sessionsMap.put("", session);
-			log.info("Dodao sesiju: " + session.getId() + " u endpoint-u: " + this.hashCode() + ", ukupno sesija: " + sessions.size());
-		}
+			log.info("Dodao sesiju: " + session.getId() + " u endpoint-u: " + this.hashCode() + ", ukupno sesija: " + sessionsMap.size());
 	}
 	
 	@OnMessage
 	public void echoTextMessage(Session session, String msg, boolean last) {
 		try {
 			if (session.isOpen()) {
+				
+				System.out.println("Msg got:  " + msg);
+				
+				boolean broadcasted = false;
+				
+				//if this is a broadcasted msg don't send to others
+				if(msg.substring(msg.length()-1).equals("b"))
+				{
+					msg = msg.substring(0,msg.length()-1);
+					broadcasted = true;
+				}
+				
+				
 				
 				System.out.println(Nodes.getInstance().nodes.size());
 				String[] parts = msg.split(":");
@@ -63,36 +72,69 @@ public class ChatBackend
 						System.out.println(session.getId());
 						
 						Session userTo = sessionsMap.get(user);
-						userTo.getBasicRemote().sendText(msg, last);
-						session.getBasicRemote().sendText(msg, last);
-						System.out.println("saljemo samo privatnu");
+						
+						if(userTo == null)
+						{
+							System.out.println("Nemam ovog usera na naski server");
+							
+							if(broadcasted == false)
+							{
+								for(Host h : Nodes.getInstance().nodes)
+								{
+									session.getBasicRemote().sendText(msg, last);
+									System.out.println("Sent request to another node");
+									sendToNodes("ws://" + h.getAddress() + ":8080/ChatAppClient/websocket", msg, session);
+								}
+							}
+							
+						}
+						else
+						{
+							userTo.getBasicRemote().sendText(msg, last);
+							session.getBasicRemote().sendText(msg, last);
+							System.out.println("saljemo samo privatnu");
+						}
+						
 						return;
 					}
 					else if(parts[0].equals("{\"name\"")) //register user session <--> username
 					{
 						String user = parts[1].split(",")[0].replaceAll("\"", "");
 						System.out.println("Registrrr: " + user);
+						
+						//poslao mi novi klijent odgovor da se registrova, ja njemu  vratim listu mojih usera
+						//kako da mu vratim socket objekte  jebemliga
+						if(broadcasted == true)
+						{
+							
+						}
+						
 						sessionsMap.put(user, session);
 						
-						/*ResteasyClient client = new ResteasyClientBuilder().build();
-				        ResteasyWebTarget target = client.target("http://192.168.1.100:8080/UserAppClient/rest/users/list/");
-				        Response response = target.request().get();
-				        String ret = response.readEntity(String.class);
-				        System.out.println(ret);*/
+					}
+					else if(parts[0].equals("{\"remove\""))
+					{
+						String user = parts[1].split(",")[0].replaceAll("\"", "");
+						System.out.println("Removee: " + user);
+						sessionsMap.remove(user);
 					}
 						
 				}
 				
-				for(Host h : Nodes.getInstance().nodes)
-				{
-					
-					sendToNodes("ws://10.42.0.88:8080/ChatAppClient/websocket", msg);
-				}
 				
-				//posaljemo svim aktivnim sesijama na cvoru
-				for (Session s : sessions) {
-						s.getBasicRemote().sendText(msg, last);
-						
+				if(broadcasted == false)
+				{
+					for(Host h : Nodes.getInstance().nodes)
+					{
+						System.out.println("Sent request to another node");
+						sendToNodes("ws://" + h.getAddress() + ":8080/ChatAppClient/websocket", msg, session);
+					}
+				}
+			
+				for (Map.Entry<String, Session> entry : sessionsMap.entrySet())
+				{
+					System.out.println(entry.getKey());
+					entry.getValue().getBasicRemote().sendText(msg, last);
 				}
 			}
 		} catch (IOException e) {
@@ -104,21 +146,37 @@ public class ChatBackend
 		}
 	}
 	
-	public void sendToNodes(String addr, String message)
+	public void sendToNodes(String addr, String message, Session currSession)
 	{
-		WebSocketClient c = new WebSocketClient(addr);
-		c.sendMessage(message);
+		WebSocketClient c = new WebSocketClient(addr, currSession);
+		c.sendMessage(message + "b");
 	}
 
 	@OnClose
 	public void close(Session session) {
-		sessions.remove(session);
+		for (Map.Entry<String, Session> entry : sessionsMap.entrySet())
+		{
+			if(entry.getValue().getId().equals(session.getId()))
+			{
+				sessionsMap.remove(entry);
+				 return;
+			}
+		   
+		}
 		log.info("Zatvorio: " + session.getId() + " u endpoint-u: " + this.hashCode());
 	}
 	
 	@OnError
 	public void error(Session session, Throwable t) {
-		sessions.remove(session);
+		for (Map.Entry<String, Session> entry : sessionsMap.entrySet())
+		{
+			if(entry.getValue().getId().equals(session.getId()))
+			{
+				sessionsMap.remove(entry);
+				 return;
+			}
+		   
+		}
 		log.log(Level.SEVERE, "Gre�ka u sessiji: " + session.getId() + " u endpoint-u: " + this.hashCode() + ", tekst: " + t.getMessage());
 		t.printStackTrace();
 	}

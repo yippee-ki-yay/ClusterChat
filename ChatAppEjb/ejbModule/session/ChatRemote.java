@@ -12,9 +12,9 @@ public interface ChatRemote
 {
 	public ArrayList<Host> registerHost(Host h);
 	
-	public String getMsg(String m);
-	
 	public String login(User u);
+	
+	public String logout(String name);
 	
 	public String register(User u);
 	

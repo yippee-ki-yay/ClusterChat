@@ -8,14 +8,20 @@
 		$scope.msgList = [];
 		$scope.userList = [];
 		
-		var dataStream = $websocket('ws://192.168.1.100:8080/ChatAppClient/websocket');
+		$scope.currUser = userService.getUser();
+		
+		var ourIp = "192.168.1.100";
+		
+		//redirektuj ga odavde ako nije logovan
+		
+		var dataStream = $websocket('ws://' + ourIp +':8080/ChatAppClient/websocket');
 		
 		 $http.get("http://192.168.1.100:8080/UserAppClient/rest/users/list/")
 		    .then(function(response) {
 		        console.log(response);
 		        angular.forEach(response.data, function(value, key) {
 		        	if(value.username == userService.getUser()) {
-		        		$scope.userList.push(value.username + " (You)");
+		        		//$scope.userList.push(value.username + " (You)");
 		        	} else {
 		        		$scope.userList.push(value.username);
 		        	}
@@ -43,6 +49,13 @@
 					$scope.userList.push(msg.name);
 				}
 				
+			} else if(msg.hasOwnProperty("remove")) {
+				if($scope.userList != undefined)
+				for(var i = $scope.userList.length - 1; i >= 0; i--) {
+				    if($scope.userList[i] === msg.remove) {
+				    	$scope.userList.splice(i, 1);
+				    }
+				}
 			}
 			
 			
@@ -77,10 +90,19 @@
 		})();
 		
 		$scope.logout = function() {
-			console.log("logout");
-			userService.logout();
+		
 			
-			$location.path("/login/");
+			$http.get("http://" + ourIp + ":8080/ChatAppClient/rest/users/logout/" + $scope.currUser)
+		    .then(function(response) {
+		    	console.log("logout");
+				
+				dataStream.send({"remove" : $scope.currUser, "type": "remove"});
+				
+				userService.logout();	
+		    	$location.path("/login/");
+		    });
+			
+		
 			
 		}
 		
@@ -99,15 +121,6 @@
 			return $scope.msgText;
 		}
 		
-		function ArrNoDupe(a) {
-		    var temp = {};
-		    for (var i = 0; i < a.length; i++)
-		        temp[a[i]] = true;
-		    var r = [];
-		    for (var k in temp)
-		        r.push(k);
-		    return r;
-		}
 		
 	};
 })();

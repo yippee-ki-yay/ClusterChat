@@ -1,8 +1,7 @@
 package session;
 
-import java.util.ArrayList;
-
 import javax.ejb.Remote;
+import javax.ws.rs.core.Response;
 
 import model.User;
 
@@ -15,7 +14,7 @@ public interface UserBeanLocal {
 	
 	public String getMsg(String m);
 	
-	public ArrayList<User> listUsers();
+	public Response listUsers();
 	
-	public String logout(User u);
+	public String logout(String name);
 }

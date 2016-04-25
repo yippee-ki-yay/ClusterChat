@@ -38,7 +38,7 @@ public class ChatBean implements ChatRemote
 		//prosledimo ovo nasem user appu
 		
 		ResteasyClient client = new ResteasyClientBuilder().build();
-        ResteasyWebTarget target = client.target("http://localhost:8080/UserAppClient/rest/users/login/");
+        ResteasyWebTarget target = client.target("http://" + Nodes.getInstance().masterAddr + ":8080/UserAppClient/rest/users/login/");
         Response response = target.request().post(Entity.entity(new User(u.getUsername(), u.getPassword()), MediaType.APPLICATION_JSON));
         String ret = response.readEntity(String.class);
         System.out.println(ret);
@@ -58,8 +58,10 @@ public class ChatBean implements ChatRemote
 	@Override
 	public String himaster()
 	{
+		Nodes.getInstance().nodes.add(new Host(Nodes.getInstance().masterAddr, "master")); //dodali mastera
+		
 		ResteasyClient client = new ResteasyClientBuilder().build();
-        ResteasyWebTarget target = client.target("http://192.168.1.100:8080/ChatAppClient/rest/users/registerHost/");
+        ResteasyWebTarget target = client.target("http://" + Nodes.getInstance().masterAddr + ":8080/ChatAppClient/rest/users/registerHost/");
         Response response = target.request().post(Entity.entity(new Host("nasa addr", "komp2"), MediaType.APPLICATION_JSON));
 		
 		return "OK";
@@ -72,7 +74,7 @@ public class ChatBean implements ChatRemote
 	public String register(User u) 
 	{
 		ResteasyClient client = new ResteasyClientBuilder().build();
-        ResteasyWebTarget target = client.target("http://localhost:8080/UserAppClient/rest/users/register/");
+        ResteasyWebTarget target = client.target("http://" + Nodes.getInstance().masterAddr + ":8080/UserAppClient/rest/users/register/");
         Response response = target.request().post(Entity.entity(new User(u.getUsername(), u.getPassword()), MediaType.APPLICATION_JSON));
         String ret = response.readEntity(String.class);
         System.out.println(ret);
@@ -122,10 +124,19 @@ public class ChatBean implements ChatRemote
 			}
 		}
 
+		@GET
+		@Path("/logout/{name}")
+		@Produces(MediaType.TEXT_PLAIN)
 		@Override
-		public String getMsg(String m) {
-			// TODO Auto-generated method stub
-			return null;
+		public String logout(@PathParam("name") String name) 
+		{
+			ResteasyClient client = new ResteasyClientBuilder().build();
+	        ResteasyWebTarget target = client.target("http://" + Nodes.getInstance().masterAddr + ":8080/UserAppClient/rest/users/logout/" + name);
+	        Response response = target.request().get();
+	        String ret = response.readEntity(String.class);
+	        System.out.println(ret);
+			
+			return ret;
 		}
 
 }

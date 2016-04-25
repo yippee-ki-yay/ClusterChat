@@ -1,24 +1,14 @@
 package session;
 
-import java.util.ArrayList;
-import java.io.File;
-import java.io.IOException;
-
 import javax.ejb.LocalBean;
-import javax.ejb.Stateful;
 import javax.ejb.Stateless;
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.Response;
 
 import model.User;
@@ -93,20 +83,38 @@ public class UserBean implements UserBeanLocal {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/list")
 	@Override
-	public ArrayList<User> listUsers() 
+	public Response listUsers() 
 	{
-		return UserData.getInstance().currentUsers;
+		return Response
+	            .status(200)
+	            .header("Access-Control-Allow-Origin", "*")
+	            .header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization")
+	            .header("Access-Control-Allow-Credentials", "true")
+	            .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD")
+	            .header("Access-Control-Max-Age", "1209600")
+	            .entity(UserData.getInstance().currentUsers)
+	            .build();
 	}
 
 	@GET
+	@Path("/logout/{name}")
 	@Produces(MediaType.TEXT_PLAIN)
-	@Path("/logout")
 	@Override
-	public String logout(User u) 
+	public String logout(@PathParam("name")String name) 
 	{
-		UserData.getInstance().currentUsers.remove(u);
 		
-		return "true";
+		for(User u : UserData.getInstance().currentUsers)
+		{
+			if(u.getUsername().equals(name))
+			{
+				UserData.getInstance().currentUsers.remove(u);
+				System.out.println("Uklonili: " + u.getUsername());
+				return "true";
+			}
+		}
+		
+		
+		return "false";
 	}
 
    

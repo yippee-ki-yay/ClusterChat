@@ -10,6 +10,8 @@ public class Nodes
 	
 	public ArrayList<Host> nodes = new ArrayList<Host>();
 	
+	public String masterAddr = "192.168.1.100";
+	
 	public static Nodes getInstance()
 	{
 		return node;
