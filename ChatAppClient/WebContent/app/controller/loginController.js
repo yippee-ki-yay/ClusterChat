@@ -17,11 +17,11 @@
 		$scope.login = function() {
 			var content = {"username": $scope.username, "password": $scope.password};
 			
-			$http.post("http://" + ourIp + ":8080/ChatAppClient/rest/users/login/", content).
+			$http.post("rest/users/login/", content).
 				then(function(resp) {
 					console.log(resp);
 					if (resp.data != "false") {
-						userService.login(resp.data);
+						userService.login($scope.username);
 						$location.path("/chat/");
 					}else {
 						$scope.errorMsg = "The username/password are incorrect or you are not registered";

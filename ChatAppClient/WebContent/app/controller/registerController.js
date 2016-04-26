@@ -17,7 +17,7 @@
 		$scope.register = function() {
 			var content = {"username": $scope.username, "password": $scope.password};
 			
-			$http.post("http://" + ourIp + ":8080/ChatAppClient/rest/users/logout/", content).
+			$http.post("rest/users/register/", content).
 				then(function(resp) {
 					if (resp.data == "true") {
 						$location.path("/login/");

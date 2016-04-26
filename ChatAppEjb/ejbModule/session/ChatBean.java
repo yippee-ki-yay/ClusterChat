@@ -81,6 +81,13 @@ public class ChatBean implements ChatRemote
         		LinkedHashMap host = (LinkedHashMap)h;
         		
         		System.out.println(host.get("address"));
+        		//nemoj svoju addr da dodas
+        		if(!Nodes.getInstance().ourAddr.equals(host.get("address").toString()))
+        		{
+            		//Nodes.getInstance().nodes.add(new Host(host.get("address").toString(), host.get("alias").toString()));
+
+        		}
+        		
         	}
         }
         

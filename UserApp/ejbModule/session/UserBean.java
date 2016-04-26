@@ -52,7 +52,7 @@ public class UserBean implements UserBeanLocal {
 				currUser.getPassword().equals(u.getPassword()))
 			{
 				UserData.getInstance().currentUsers.add(u);
-				return u.getUsername();
+				return "true";
 			}
 		}
 		

@@ -1,14 +1,12 @@
 package websockets;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.ejb.AccessTimeout;
 import javax.ejb.Singleton;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
@@ -16,9 +14,6 @@ import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
-import javax.websocket.*;
-
-import com.sun.org.apache.xerces.internal.util.URI;
 
 import model.Host;
 import model.Nodes;
@@ -41,6 +36,7 @@ public class ChatBackend
 			log.info("Dodao sesiju: " + session.getId() + " u endpoint-u: " + this.hashCode() + ", ukupno sesija: " + sessionsMap.size());
 	}
 	
+	@AccessTimeout(2000)
 	@OnMessage
 	public void echoTextMessage(Session session, String msg, boolean last) {
 		try {
