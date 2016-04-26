@@ -24,7 +24,7 @@ import model.UserData;
  */
 @Stateless
 @LocalBean
-@Path("/users")
+@Path("/userss")
 public class UserBean implements UserBeanLocal {
 	
 	@GET

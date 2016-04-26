@@ -20,7 +20,7 @@
 			$http.post("rest/users/login/", content).
 				then(function(resp) {
 					console.log(resp);
-					if (resp.data != "false") {
+					if (resp.data != false) {
 						userService.login($scope.username);
 						$location.path("/chat/");
 					}else {

@@ -1,0 +1,229 @@
+package session;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.MessageConsumer;
+import javax.jms.MessageProducer;
+import javax.jms.Queue;
+import javax.jms.Session;
+import javax.jms.TextMessage;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.jboss.resteasy.client.jaxrs.ResteasyClient;
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
+
+import model.Host;
+import model.Nodes;
+import model.User;
+
+@LocalBean
+@Path("/users")
+@Stateless
+public class ChatBean implements ChatRemote
+{
+	
+	public ChatBean() {
+		
+	}
+	
+	@POST
+	@Path("/login")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Override
+	public String login(User u) 
+	{
+		//prosledimo ovo nasem user appu
+		
+		/*ResteasyClient client = new ResteasyClientBuilder().build();
+        ResteasyWebTarget target = client.target("http://" + Nodes.getInstance().masterAddr + ":8080/UserAppClient/rest/users/login/");
+        Response response = target.request().post(Entity.entity(new User(u.getUsername(), u.getPassword()), MediaType.APPLICATION_JSON));
+        String ret = response.readEntity(String.class);
+        System.out.println(ret);*/
+        
+        //Nodes.getInstance().JMSMessage();
+        
+		//return ret;
+		try {
+			Context context = new InitialContext();
+			ConnectionFactory cf = (ConnectionFactory) context
+					.lookup("jms/RemoteConnectionFactory");
+			final Queue queue = (Queue) context
+					.lookup("jms/queue/mojQueue");
+			context.close();
+			Connection connection = cf.createConnection("guest", "guestguest");
+			final Session session = connection.createSession(false,
+					Session.AUTO_ACKNOWLEDGE);
+
+			connection.start();
+
+			MessageConsumer consumer = session.createConsumer(queue);
+			consumer.setMessageListener(this);
+
+		    TextMessage msg = session.createTextMessage("Queue message!");
+		    // The sent timestamp acts as the message's ID
+		    long sent = System.currentTimeMillis();
+		    msg.setLongProperty("sent", sent);
+		    
+			MessageProducer producer = session.createProducer(queue);
+			producer.send(msg);
+			Thread.sleep(1000);
+			System.out.println("Message published. Please check application server's console to see the response from MDB.");
+
+			producer.close();
+			consumer.close();
+			connection.stop();
+		    
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return "";
+	}
+	
+
+
+	@GET
+	@Path("/himaster")
+	@Produces(MediaType.TEXT_PLAIN)
+	@Override
+	public String himaster()
+	{
+		Nodes.getInstance().nodes.add(new Host(Nodes.getInstance().masterAddr, "master")); //dodali mastera
+		System.out.println("Master added");
+		
+		ResteasyClient client = new ResteasyClientBuilder().build();
+        ResteasyWebTarget target = client.target("http://" + Nodes.getInstance().masterAddr + ":8080/ChatAppClient/rest/users/registerHost/");
+        Response response = target.request().post(Entity.entity(new Host("nasa addr", "komp2"), MediaType.APPLICATION_JSON));
+		
+        ArrayList<Host> ret = response.readEntity(ArrayList.class);
+        
+        Iterator itr = ret.iterator();
+        
+        System.out.println(ret.size() + "  " + ret.get(0));
+        for(Object h : ret)
+        {
+        	if(h instanceof  java.util.LinkedHashMap)
+        	{
+        		LinkedHashMap host = (LinkedHashMap)h;
+        		
+        		System.out.println(host.get("address"));
+        		//nemoj svoju addr da dodas
+        		if(!Nodes.getInstance().ourAddr.equals(host.get("address").toString()))
+        		{
+            		//Nodes.getInstance().nodes.add(new Host(host.get("address").toString(), host.get("alias").toString()));
+
+        		}
+        		
+        	}
+        }
+        
+		return "OK";
+	}
+	
+	@POST
+	@Path("/register")
+	@Produces(MediaType.TEXT_PLAIN)
+	@Override
+	public String register(User u) 
+	{
+		ResteasyClient client = new ResteasyClientBuilder().build();
+        ResteasyWebTarget target = client.target("http://" + Nodes.getInstance().masterAddr + ":8080/UserAppClient/rest/users/register/");
+        Response response = target.request().post(Entity.entity(new User(u.getUsername(), u.getPassword()), MediaType.APPLICATION_JSON));
+        String ret = response.readEntity(String.class);
+        System.out.println(ret);
+		
+        System.out.println("Poslao register u ChatApp:" + u.getUsername());
+        
+		return ret;
+	}
+	
+	//gledamo ovo kao master cvor
+		//ovo pozivaju drugi cvorevi mi dodamo kod sebe sta su nam poslali i vratimo listu svih cvoreva
+		@POST
+		@Path("/registerHost")
+		@Consumes(MediaType.APPLICATION_JSON)
+		@Produces(MediaType.APPLICATION_JSON)
+		public ArrayList<Host> registerHost(Host h)
+		{
+			System.out.println("Pogodio register");
+			ArrayList<Host> copy = new ArrayList<Host>(Nodes.getInstance().nodes);
+			
+			//pozovemo od drugih addHost metodu da oni ubace kod sebe novog cvoras (OVO SAMO MASTER)
+			for(Host n : copy)
+			{
+				ResteasyClient client = new ResteasyClientBuilder().build();
+		        ResteasyWebTarget target = client.target("http://" + n.getAddress() + ":8080/ChatAppClient/rest/users/addNode/");
+		        Response response = target.request().post(Entity.entity(h, MediaType.APPLICATION_JSON));
+		        String ret = response.readEntity(String.class);
+		        System.out.println(ret);
+			}
+			
+			System.out.println(h.getAddress());
+			Nodes.getInstance().nodes.add(h);
+			
+			//isto samo MASTER
+			//posaljemo listu cvorova onom ko se sad registrovao
+			return Nodes.getInstance().nodes;
+		}
+		
+		@POST
+		@Path("/addNode")
+		@Consumes(MediaType.APPLICATION_JSON)
+		@Produces(MediaType.TEXT_PLAIN)
+		@Override
+		public String addNode(Host h)
+		{
+			Nodes.getInstance().nodes.add(h);
+			
+			return "OK";
+		}
+		
+		
+		@GET
+		@Path("/unregisterHost")
+		@Consumes(MediaType.APPLICATION_JSON)
+		@Produces(MediaType.APPLICATION_JSON)
+		void unregisterHost(Host h)
+		{
+			Nodes.getInstance().nodes.remove(h);
+			
+			//posaljemo svima da se unregistrovao (OVO SAMO MASTER)
+			for(Host currHost : Nodes.getInstance().nodes)
+			{
+				//opali rest client request
+			}
+		}
+
+		@GET
+		@Path("/logout/{name}")
+		@Produces(MediaType.TEXT_PLAIN)
+		@Override
+		public String logout(@PathParam("name") String name) 
+		{
+			ResteasyClient client = new ResteasyClientBuilder().build();
+	        ResteasyWebTarget target = client.target("http://" + Nodes.getInstance().masterAddr + ":8080/UserAppClient/rest/users/logout/" + name);
+	        Response response = target.request().get();
+	        String ret = response.readEntity(String.class);
+	        System.out.println(ret);
+			
+			return ret;
+		}
+
+}

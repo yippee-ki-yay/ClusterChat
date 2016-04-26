@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
 <fullyQualifiedTypeName name="javax.enterprise.inject.Produces"/>
-<fullyQualifiedTypeName name="model.User"/>
 <fullyQualifiedTypeName name="java.util.ArrayList"/>
 <fullyQualifiedTypeName name="javax.ws.rs.client.Entity"/>
 <fullyQualifiedTypeName name="java.lang.String"/>
 <fullyQualifiedTypeName name="javax.ejb.Remote"/>
+<fullyQualifiedTypeName name="model.User"/>
+<fullyQualifiedTypeName name="javax.jms.ObjectMessage"/>
 </qualifiedTypeNameHistroy>

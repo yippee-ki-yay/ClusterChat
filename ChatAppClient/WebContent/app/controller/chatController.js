@@ -14,13 +14,13 @@
 			$location.path("/login/");
 		}
 		
-		var ourIp = "192.168.0.14";
+		var ourIp = "192.168.1.100";
 		
 		//redirektuj ga odavde ako nije logovan
 		
 		var dataStream = $websocket('ws://' + ourIp +':8080/ChatAppClient/websocket');
 		
-		 $http.get("http://192.168.0.14:8080/UserAppClient/rest/users/list/")
+		 $http.get("http://192.168.1.100:8080/UserAppClient/rest/userss/list/")
 		    .then(function(response) {
 		        console.log(response);
 		        angular.forEach(response.data, function(value, key) {

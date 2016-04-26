@@ -1,8 +1,0 @@
-package session;
-
-public class User 
-{
-	private String username;
-	private String password;
-	
-}

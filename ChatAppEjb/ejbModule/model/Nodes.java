@@ -20,9 +20,9 @@ public class Nodes
 	
 	public ArrayList<Host> nodes = new ArrayList<Host>();
 	
-	public String masterAddr = "192.168.0.14";
+	public String masterAddr = "192.168.1.100";
 	
-	public String ourAddr = "192.168.0.14";
+	public String ourAddr = "192.168.1.100";
 	
 	public void JMSMessage()
 	{

@@ -6,6 +6,15 @@ import java.util.LinkedHashMap;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.MessageConsumer;
+import javax.jms.MessageProducer;
+import javax.jms.Queue;
+import javax.jms.Session;
+import javax.jms.TextMessage;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -44,14 +53,17 @@ public class ChatBean implements ChatRemote
 		//prosledimo ovo nasem user appu
 		
 		ResteasyClient client = new ResteasyClientBuilder().build();
-        ResteasyWebTarget target = client.target("http://" + Nodes.getInstance().masterAddr + ":8080/UserAppClient/rest/users/login/");
+        ResteasyWebTarget target = client.target("http://" + Nodes.getInstance().masterAddr + ":8080/UserAppClient/rest/userss/login/");
         Response response = target.request().post(Entity.entity(new User(u.getUsername(), u.getPassword()), MediaType.APPLICATION_JSON));
         String ret = response.readEntity(String.class);
         System.out.println(ret);
         
         //Nodes.getInstance().JMSMessage();
         
+		System.out.println("login");
+		
 		return ret;
+		
 	}
 	
 
@@ -101,7 +113,7 @@ public class ChatBean implements ChatRemote
 	public String register(User u) 
 	{
 		ResteasyClient client = new ResteasyClientBuilder().build();
-        ResteasyWebTarget target = client.target("http://" + Nodes.getInstance().masterAddr + ":8080/UserAppClient/rest/users/register/");
+        ResteasyWebTarget target = client.target("http://" + Nodes.getInstance().masterAddr + ":8080/UserAppClient/rest/userss/register/");
         Response response = target.request().post(Entity.entity(new User(u.getUsername(), u.getPassword()), MediaType.APPLICATION_JSON));
         String ret = response.readEntity(String.class);
         System.out.println(ret);
@@ -175,7 +187,7 @@ public class ChatBean implements ChatRemote
 		public String logout(@PathParam("name") String name) 
 		{
 			ResteasyClient client = new ResteasyClientBuilder().build();
-	        ResteasyWebTarget target = client.target("http://" + Nodes.getInstance().masterAddr + ":8080/UserAppClient/rest/users/logout/" + name);
+	        ResteasyWebTarget target = client.target("http://" + Nodes.getInstance().masterAddr + ":8080/UserAppClient/rest/userss/logout/" + name);
 	        Response response = target.request().get();
 	        String ret = response.readEntity(String.class);
 	        System.out.println(ret);
