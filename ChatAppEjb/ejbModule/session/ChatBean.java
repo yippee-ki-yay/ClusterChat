@@ -63,6 +63,7 @@ public class ChatBean implements ChatRemote
 	public String himaster()
 	{
 		Nodes.getInstance().nodes.add(new Host(Nodes.getInstance().masterAddr, "master")); //dodali mastera
+		System.out.println("Master added");
 		
 		ResteasyClient client = new ResteasyClientBuilder().build();
         ResteasyWebTarget target = client.target("http://" + Nodes.getInstance().masterAddr + ":8080/ChatAppClient/rest/users/registerHost/");
@@ -98,6 +99,8 @@ public class ChatBean implements ChatRemote
         String ret = response.readEntity(String.class);
         System.out.println(ret);
 		
+        System.out.println("Poslao register u ChatApp:" + u.getUsername());
+        
 		return ret;
 	}
 	
@@ -122,6 +125,7 @@ public class ChatBean implements ChatRemote
 		        System.out.println(ret);
 			}
 			
+			System.out.println(h.getAddress());
 			Nodes.getInstance().nodes.add(h);
 			
 			//isto samo MASTER

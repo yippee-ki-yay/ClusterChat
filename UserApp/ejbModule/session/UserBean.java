@@ -75,6 +75,8 @@ public class UserBean implements UserBeanLocal {
 			}
 		}
 		
+		System.out.println("Poslao register u UserApp:" + u.getUsername());
+		
 		System.out.println("U registri: " + u.getUsername());
 		
 		UserData.getInstance().userList.add(u);

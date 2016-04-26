@@ -8,6 +8,8 @@
 		$scope.username = '';
 		$scope.password = '';
 		
+		var ourIp = "192.168.90.249";
+		
 		if(userService.getUser() != undefined) {
 			$location.path("/chat/");
 		}
@@ -15,7 +17,7 @@
 		$scope.register = function() {
 			var content = {"username": $scope.username, "password": $scope.password};
 			
-			$http.post('rest/users/register/', content).
+			$http.post("http://" + ourIp + ":8080/ChatAppClient/rest/users/logout/", content).
 				then(function(resp) {
 					if (resp.data == "true") {
 						$location.path("/login/");

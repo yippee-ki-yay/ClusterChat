@@ -119,14 +119,14 @@ public class ChatBackend
 				{
 					for(Host h : Nodes.getInstance().nodes)
 					{
-						System.out.println("Sent request to another node");
+						System.out.println("Sent request to another node: " + h.getAddress());
 						sendToNodes("ws://" + h.getAddress() + ":8080/ChatAppClient/websocket", msg, session);
 					}
 				}
 			
 				for (Map.Entry<String, Session> entry : sessionsMap.entrySet())
 				{
-					System.out.println(entry.getKey());
+					System.out.println("saljem drugima");
 					entry.getValue().getBasicRemote().sendText(msg, last);
 				}
 			}
