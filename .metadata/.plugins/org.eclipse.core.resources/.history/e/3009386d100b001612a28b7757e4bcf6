@@ -1,0 +1,26 @@
+package session;
+
+public class Snippet {
+	 
+	    public void onMessage(Message msg) { 
+	      if (msg instanceof TextMessage) {
+	          TextMessage tm = (TextMessage) msg;
+	          try {
+	              String text = tm.getText();
+	              System.out.println("Received new message : " + text);
+	              log.log(text);
+	              // izazovemo retransmisiju, (ovo nece potrditi prijem cak i 
+	              // da postavimo acknowledge na AUTO, sto je default)
+	              Thread.sleep(3000);
+	//              ctx.setRollbackOnly();
+	//              throw new EJBException("Pucanj!");
+	          } catch (JMSException e) {
+	              e.printStackTrace();
+	          } catch (InterruptedException e) {
+	            e.printStackTrace();
+	 
+			}
+	      }
+	  }
+}
+

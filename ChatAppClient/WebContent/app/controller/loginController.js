@@ -8,6 +8,10 @@
 		$scope.username = '';
 		$scope.password = '';
 		
+		if(userService.getUser() != undefined) {
+			$location.path("/chat/");
+		}
+		
 		$scope.login = function() {
 			var content = {"username": $scope.username, "password": $scope.password};
 			

@@ -19,6 +19,7 @@
     	
     	function logout() {
     		$cookies.remove("username");
+    		$cookies.username = undefined;
     	}
     	
     	return {

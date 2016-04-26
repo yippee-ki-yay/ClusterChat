@@ -10,6 +10,10 @@
 		
 		$scope.currUser = userService.getUser();
 		
+		if($scope.currUser == undefined) {
+			$location.path("/login/");
+		}
+		
 		var ourIp = "192.168.1.100";
 		
 		//redirektuj ga odavde ako nije logovan

@@ -1,6 +1,8 @@
 package session;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -27,7 +29,11 @@ import model.User;
 @Stateless
 public class ChatBean implements ChatRemote
 {
-
+	
+	public ChatBean() {
+		
+	}
+	
 	@POST
 	@Path("/login")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -42,15 +48,13 @@ public class ChatBean implements ChatRemote
         Response response = target.request().post(Entity.entity(new User(u.getUsername(), u.getPassword()), MediaType.APPLICATION_JSON));
         String ret = response.readEntity(String.class);
         System.out.println(ret);
-		
-        //prodjemo kroz sve nodove i svima posaljemo da imamo novog usera
-        for(Host h : Nodes.getInstance().nodes)
-        {
-        	//add the bitches
-        }
+        
+        //Nodes.getInstance().JMSMessage();
         
 		return ret;
 	}
+	
+
 
 	@GET
 	@Path("/himaster")
@@ -64,6 +68,21 @@ public class ChatBean implements ChatRemote
         ResteasyWebTarget target = client.target("http://" + Nodes.getInstance().masterAddr + ":8080/ChatAppClient/rest/users/registerHost/");
         Response response = target.request().post(Entity.entity(new Host("nasa addr", "komp2"), MediaType.APPLICATION_JSON));
 		
+        ArrayList<Host> ret = response.readEntity(ArrayList.class);
+        
+        Iterator itr = ret.iterator();
+        
+        System.out.println(ret.size() + "  " + ret.get(0));
+        for(Object h : ret)
+        {
+        	if(h instanceof  java.util.LinkedHashMap)
+        	{
+        		LinkedHashMap host = (LinkedHashMap)h;
+        		
+        		System.out.println(host.get("address"));
+        	}
+        }
+        
 		return "OK";
 	}
 	
@@ -90,24 +109,38 @@ public class ChatBean implements ChatRemote
 		@Produces(MediaType.APPLICATION_JSON)
 		public ArrayList<Host> registerHost(Host h)
 		{
-			Nodes.getInstance().nodes.add(h);
 			System.out.println("Pogodio register");
-			//pozovemo od drugih register metodu da oni ubace kod sebe novog cvoras (OVO SAMO MASTER)
-			/*for(Host n : Nodes.getInstance().nodes)
+			ArrayList<Host> copy = new ArrayList<Host>(Nodes.getInstance().nodes);
+			
+			//pozovemo od drugih addHost metodu da oni ubace kod sebe novog cvoras (OVO SAMO MASTER)
+			for(Host n : copy)
 			{
 				ResteasyClient client = new ResteasyClientBuilder().build();
-		        ResteasyWebTarget target = client.target( n.getAddress() + "/ChatAppClient/rest/cluster/register/");
+		        ResteasyWebTarget target = client.target("http://" + n.getAddress() + ":8080/ChatAppClient/rest/users/addNode/");
 		        Response response = target.request().post(Entity.entity(h, MediaType.APPLICATION_JSON));
 		        String ret = response.readEntity(String.class);
 		        System.out.println(ret);
-			}*/
+			}
 			
-			
+			Nodes.getInstance().nodes.add(h);
 			
 			//isto samo MASTER
 			//posaljemo listu cvorova onom ko se sad registrovao
 			return Nodes.getInstance().nodes;
 		}
+		
+		@POST
+		@Path("/addNode")
+		@Consumes(MediaType.APPLICATION_JSON)
+		@Produces(MediaType.TEXT_PLAIN)
+		@Override
+		public String addNode(Host h)
+		{
+			Nodes.getInstance().nodes.add(h);
+			
+			return "OK";
+		}
+		
 		
 		@GET
 		@Path("/unregisterHost")

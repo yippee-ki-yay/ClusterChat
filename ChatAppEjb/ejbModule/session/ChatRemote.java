@@ -19,4 +19,6 @@ public interface ChatRemote
 	public String register(User u);
 	
 	public String himaster();
+	
+	public String addNode(Host h);
 }

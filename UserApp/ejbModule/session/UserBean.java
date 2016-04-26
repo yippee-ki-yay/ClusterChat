@@ -1,7 +1,12 @@
 package session;
 
+import javax.ejb.ActivationConfigProperty;
 import javax.ejb.LocalBean;
+import javax.ejb.MessageDriven;
 import javax.ejb.Stateless;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.TextMessage;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -85,6 +90,8 @@ public class UserBean implements UserBeanLocal {
 	@Override
 	public Response listUsers() 
 	{
+		System.out.println("broj korisnika" + UserData.getInstance().currentUsers.size());
+		
 		return Response
 	            .status(200)
 	            .header("Access-Control-Allow-Origin", "*")

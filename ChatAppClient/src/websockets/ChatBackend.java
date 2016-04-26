@@ -102,13 +102,6 @@ public class ChatBackend
 						String user = parts[1].split(",")[0].replaceAll("\"", "");
 						System.out.println("Registrrr: " + user);
 						
-						//poslao mi novi klijent odgovor da se registrova, ja njemu  vratim listu mojih usera
-						//kako da mu vratim socket objekte  jebemliga
-						if(broadcasted == true)
-						{
-							
-						}
-						
 						sessionsMap.put(user, session);
 						
 					}
